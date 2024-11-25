@@ -5,10 +5,10 @@
   "notes": "Комментарии к обновлению",
   "builds": [
     {
-      "chipFamily": "ESP32",
+       "chipFamily": "ESP32",
       "parts": [
         {
-          "path": "https://github.com/Sanata79/Heateros/blob/main/update.bin",
+          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
           "offset": 0
         }
       ]
