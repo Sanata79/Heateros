@@ -4,6 +4,7 @@
   "version": "2.6",
   "notes": "Исправлены мелкие баги",
   "path": "https://github.com/Sanata79/Heateros/blob/main/update.bin",
+  "offset": 0
   "builds": [
     {
       "chipFamily": "ESP8266",
