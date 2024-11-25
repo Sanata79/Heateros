@@ -1,0 +1,17 @@
+{
+  "name": "HeaterOS",
+  "about": "Краткое описание проекта",
+  "version": "2.6",
+  "notes": "Комментарии к обновлению",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
