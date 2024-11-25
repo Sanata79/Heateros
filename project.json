@@ -8,7 +8,7 @@
        "chipFamily": "ESP32",
       "parts": [
         {
-          "path": "https://github.com/Sanata79/Heateros/raw/refs/heads/main/update.bin",
+          "path": "https://raw.githubusercontent.com/",
           "offset": 0
         }
       ]
