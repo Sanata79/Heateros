@@ -3,6 +3,7 @@
   "about": "Краткое описание проекта",
   "version": "2.6",
   "notes": "Комментарии к обновлению",
+  "path": "https://github.com/Sanata79/Heateros/raw/47db59e86a5e10aa7a1ba5f931ebcd144852fc10/update.bin",
   "builds": [
     {
       "chipFamily": "ESP32",
