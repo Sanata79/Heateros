@@ -1,7 +1,17 @@
 {
-  "System": "HeaterOS",
-  "rev": 1,
-  "ver": 2,
-  "build": 241121,
-  "url": "https://github.com/Sanata79/Heateros/blob/main/241121.bin"
+  "name": "HeaterOS",
+  "about": "Краткое описание проекта",
+  "version": "2.6",
+  "notes": "Комментарии к обновлению",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
 }
