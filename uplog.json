@@ -3,7 +3,7 @@
   "about": "Краткое описание проекта",
   "version": "2.6",
   "notes": "Комментарии к обновлению",
-  "path": "https://github.com/Sanata79/Heateros/releases/download/untagged-a8a41c608f3c4067b552/update.bin",
+  "path1": "https://github.com/Sanata79/Heateros/releases/download/untagged-a8a41c608f3c4067b552/update.bin",
   "builds": [
     {
       "chipFamily": "ESP32",
