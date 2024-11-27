@@ -1,7 +1,7 @@
 {
   "name": "GyverHub-example",
   "about": "Образец оформления репозитория проекта",
-  "version": "3.1",
+  "version": "2.6",
   "notes": "Исправлены мелкие баги",
   "builds": [
     {
