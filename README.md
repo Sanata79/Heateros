@@ -1,3 +1,3 @@
 # HeaterOS
-Universal thermostat for controlling ceramic or convection heater
-Update repository
+# Universal thermostat for controlling ceramic or convection heater
+Update repositories
