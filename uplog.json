@@ -1,14 +1,14 @@
 {
-  "name": "GyverHub-example",
-  "about": "Образец оформления репозитория проекта",
-  "version": "2.6",
-  "notes": "Исправлены мелкие баги",
+  "name": "HeaterOS",
+  "about": "Universal Thermostat",
+  "version": "2.7",
+  "notes": "Added OTA Update",
   "builds": [
     {
       "chipFamily": "ESP8266",
       "parts": [
         {
-          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
+          "path": "n/a",
           "offset": 0
         }
       ]
@@ -26,7 +26,7 @@
       "chipFamily": "ESP32-C3",
       "parts": [
         {
-          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
+          "path": "n/a",
           "offset": 0
         }
       ]
@@ -35,7 +35,7 @@
       "chipFamily": "ESP32-S2",
       "parts": [
         {
-          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
+          "path": "n/a",
           "offset": 0
         }
       ]
@@ -44,7 +44,7 @@
       "chipFamily": "ESP32-S3",
       "parts": [
         {
-          "path": "https://raw.githubusercontent.com/GyverLibs/GyverHub-example/main/bin/firmware.bin",
+          "path": "n/a",
           "offset": 0
         }
       ]
