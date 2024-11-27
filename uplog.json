@@ -1,15 +1,14 @@
 {
   "name": "HeaterOS",
-  "about": "Краткое описание проекта",
-  "version": "2.6",
-  "notes": "Комментарии к обновлению",
-  "path1": "https://github.com/Sanata79/Heateros/releases/download/untagged-a8a41c608f3c4067b552/update.bin",
+  "about": "Universal Controller",
+  "version": "2.7",
+  "notes": "test Update",
   "builds": [
     {
       "chipFamily": "ESP32",
       "parts": [
         {
-          "path": "https://github.com/Sanata79/Heateros/releases/download/untagged-a8a41c608f3c4067b552/update.bin",
+          "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/update.bin",
           "offset": 0
         }
       ]
