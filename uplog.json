@@ -2,7 +2,7 @@
   "name": "HeaterOS",
   "about": "Universal Thermostat",
   "version": "2.9",
-  "notes": "Added OTA Update",
+  "notes": "Сorrection errors",
   "builds": [
     {
       "chipFamily": "ESP8266",
