@@ -1,7 +1,7 @@
 {
   "name": "HeaterOS",
   "about": "Universal Thermostat",
-  "version": "2.9",
+  "version": "1.6",
   "notes": "Сorrection errors",
   "builds": [
     {
