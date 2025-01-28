@@ -1,8 +1,8 @@
 {
   "name": "HeaterOS",
   "about": "Universal Thermostat",
-  "version": "1.7",
-  "notes": "Сorrection errors",
+  "version": "1.8",
+  "notes": "Debug System",
   "builds": [
     {
       "chipFamily": "ESP8266",
