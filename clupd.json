@@ -1,8 +1,8 @@
 {
-  "name": "HeaterOS",
-  "about": "Universal Thermostat",
-  "version": "1.8",
-  "notes": "Debug System",
+  "name": "ClockOS",
+  "about": "clock",
+  "version": "0.5",
+  "notes": "new version",
   "builds": [
     {
       "chipFamily": "ESP8266",
