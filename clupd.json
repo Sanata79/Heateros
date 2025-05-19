@@ -1,7 +1,7 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "0.6",
+  "version": "0.7",
   "notes": "UPD System",
   "builds": [
     {
