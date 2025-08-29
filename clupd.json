@@ -1,8 +1,8 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "1.2",
-  "notes": "ver 1.2",
+  "version": "1.0",
+  "notes": "ver 1.0",
   "builds": [
     {
       "chipFamily": "ESP8266",
