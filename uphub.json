@@ -1,8 +1,8 @@
 {
   "name": "HubOS",
   "about": "home hub",
-  "version": "1.0",
-  "notes": "ver 1.0",
+  "version": "0.3",
+  "notes": "ver 0.3",
   "builds": [
     {
       "chipFamily": "ESP8266",
