@@ -44,7 +44,7 @@
       "chipFamily": "ESP32-S3",
       "parts": [
         {
-          "path": "ttps://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/hub.bin",
+          "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/hub.bin",
           "offset": 0
         }
       ]
