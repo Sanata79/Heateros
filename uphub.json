@@ -1,8 +1,8 @@
 {
-  "name": "HubOS",
-  "about": "home hub",
-  "version": "0.7",
-  "notes": "ver 0.7",
+  "name": "My_hub",
+  "about": "Server",
+  "version": "0.8",
+  "notes": "ver 0.8",
   "builds": [
     {
       "chipFamily": "ESP8266",
@@ -17,7 +17,7 @@
       "chipFamily": "ESP32",
       "parts": [
         {
-          "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/hub.bin",
+          "path": "n/a",
           "offset": 0
         }
       ]
