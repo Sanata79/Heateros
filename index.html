@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ESP32 CyberDashboard</title>
+    <!-- НИКАКИХ внешних шрифтов - только системные! -->
+    <style>
+        @keyframes scan { 
+            0% { background-position: -200% 0; } 
+            100% { background-position: 200% 0; } 
+        }
+        @keyframes float { 
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; } 
+            10% { opacity: 0.3; } 
+            90% { opacity: 0.3; } 
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; } 
+        }
+        @keyframes pulse-glow { 
+            0%, 100% { box-shadow: 0 0 5px cyan; } 
+            50% { box-shadow: 0 0 20px cyan, 0 0 40px rgba(0,255,255,0.3); } 
+        }
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); } 
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); } 
+            20%, 40%, 60%, 80% { transform: translateX(8px); } 
+        }
+        @keyframes success-pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); } 
+            70% { box-shadow: 0 0 0 20px rgba(0, 255, 136, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            margin: 0; 
+            min-height: 100vh; 
+            background-color: #0b0f1a; 
+            color: cyan; 
+            font-family: 'Segoe UI', 'Arial', 'Helvetica', sans-serif;
+            overflow-x: hidden; 
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            padding-bottom: 30px;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: cyan;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Top Bar */
+        .topBar { 
+            width: 360px; 
+            height: 70px; 
+            margin: 25px auto 10px; 
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px; 
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            color: cyan; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 36px; 
+            font-family: 'Courier New', 'Consolas', monospace;
+            letter-spacing: 4px; 
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .infoPanel {
+            text-align: center;
+            color: rgba(0, 255, 255, 0.6);
+            font-size: 13px;
+            margin: 0 auto 20px;
+            letter-spacing: 3px;
+            height: 20px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        /* Cards */
+        .card {
+            width: 360px;
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            margin: 16px auto;
+            z-index: 1;
+        }
+
+        .card-header {
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(0, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        .card-header::before {
+            content: '◆';
+            position: absolute;
+            left: 25px;
+            font-size: 10px;
+            opacity: 0.5;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .card:hover:not(.expanded) {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .card.expanded {
+            border-color: cyan;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 255, 255, 0.2);
+            cursor: default;
+        }
+
+        .card.expanded .card-header {
+            display: none;
+        }
+
+        /* Specific heights */
+        #systemBar { height: 55px; }
+        #systemBar.expanded { height: 400px; }
+        
+        #controlBar { height: 55px; }
+        #controlBar.expanded { height: 345px; }
+        
+        #stringBar { height: 55px; }
+        #stringBar.expanded { height: auto; min-height: 350px; }
+
+        .card-content {
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            transform: translateY(10px);
+            height: 100%;
+        }
+
+        .card.expanded .card-content {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* Compact rows for System Monitor */
+        .row {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            min-height: 45px;
+        }
+
+        .row:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(0, 255, 255, 0.15);
+        }
+
+        .label {
+            color: rgba(0, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: left;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        .value-text {
+            display: inline-block;
+            transition: all 0.3s ease;
+            color: cyan;
+            font-weight: 600;
+            font-size: 14px;
+            margin-left: auto;
+            padding: 6px 12px;
+            background: rgba(0, 255, 255, 0.08);
+            border-radius: 6px;
+            min-width: 90px;
+            text-align: center;
+            letter-spacing: 1px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            font-family: 'Courier New', 'Consolas', monospace;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            position: relative;
+            flex-grow: 1;
+            height: 22px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 11px;
+            margin-left: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, #00f2ff, #0062ff);
+            border-radius: 11px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
+
+        .progress-fill::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: scan 2s infinite linear;
+        }
+
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 22px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            z-index: 2;
+            font-family: 'Courier New', 'Consolas', monospace;
+        }
+
+        /* Buttons */
+        .cyber-btn {
+            width: 100px;
+            height: 36px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            cursor: pointer;
+            border: 1px solid;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            margin-left: auto;
+        }
+
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .cyber-btn:hover::before {
+            left: 100%;
+        }
+
+        .cyber-btn.off {
+            border-color: rgba(255, 68, 68, 0.6);
+            color: #ff4444;
+        }
+
+        .cyber-btn.on {
+            border-color: cyan;
+            color: cyan;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .cyber-btn.warning {
+            border-color: rgba(255, 170, 0, 0.6);
+            color: #ffaa00;
+        }
+
+        .cyber-btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-text {
+            transition: all 0.3s ease;
+        }
+
+        /* Text Inputs */
+        .cyber-input {
+            flex: 1;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.4);
+            color: cyan;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            margin-left: 15px;
+            font-family: 'Courier New', 'Consolas', monospace;
+            font-size: 14px;
+            letter-spacing: 1px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-input:focus {
+            border-color: cyan;
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1), 0 0 15px rgba(0, 255, 255, 0.1);
+        }
+
+        .cyber-input::placeholder {
+            color: rgba(0, 255, 255, 0.3);
+        }
+
+        /* Close Button */
+        .close-btn {
+            text-align: center;
+            font-size: 12px;
+            margin-top: auto;
+            padding: 15px;
+            cursor: pointer;
+            color: rgba(0, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            border-top: 1px solid rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        .close-btn:hover {
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            letter-spacing: 4px;
+        }
+
+        /* File List */
+        .file-list {
+            margin-top: 10px;
+            border-top: 1px solid rgba(0, 255, 255, 0.1);
+            padding-top: 10px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            height: 34px;
+            padding: 0 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 255, 255, 0.03);
+        }
+
+        .file-name {
+            color: rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            text-align: left;
+            font-family: 'Courier New', 'Consolas', monospace;
+        }
+
+        .file-action {
+            cursor: pointer;
+            color: cyan;
+            margin-left: 15px;
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        .file-action:hover {
+            background: rgba(0, 255, 255, 0.1);
+            text-shadow: 0 0 5px cyan;
+        }
+
+        .file-delete {
+            color: #ff4444;
+        }
+
+        .file-delete:hover {
+            background: rgba(255, 68, 68, 0.1);
+            text-shadow: 0 0 5px #ff4444;
+        }
+
+        /* Upload states */
+        .upload-active {
+            background: linear-gradient(90deg, rgba(0,255,255,0), rgba(0,255,255,0.3), rgba(0,255,255,0)) !important;
+            background-size: 200% 100% !important;
+            animation: scan 1.2s infinite linear;
+            border-color: cyan !important;
+            color: cyan !important;
+        }
+
+        .upload-success {
+            border-color: #00ff88 !important;
+            color: #00ff88 !important;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4) !important;
+            animation: success-pulse 1s ease-out;
+        }
+
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 26, 0.98);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.5s ease;
+        }
+
+        .login-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-container {
+            width: 360px;
+            padding: 40px 35px;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .login-container.shake {
+            animation: shake 0.5s ease;
+            border-color: #ff4444;
+        }
+
+        .lock-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 25px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lock-body {
+            width: 32px;
+            height: 26px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid cyan;
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .lock-body.unlocked {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .lock-shackle {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 22px;
+            border: 2px solid cyan;
+            border-bottom: none;
+            border-radius: 11px 11px 0 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: bottom center;
+        }
+
+        .lock-shackle.unlocked {
+            transform: translateX(-50%) rotate(-35deg) translateY(-8px);
+            border-color: #00ff88;
+        }
+
+        .lock-keyhole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 8px;
+            background: cyan;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .lock-body.unlocked .lock-keyhole {
+            background: #00ff88;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .login-title {
+            text-align: center;
+            color: cyan;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            text-transform: uppercase;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .password-field {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            font-size: 18px;
+            font-family: 'Courier New', 'Consolas', monospace;
+            font-weight: 500;
+            letter-spacing: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            color: cyan;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .password-field:focus {
+            border-color: cyan;
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1), 0 0 25px rgba(0, 255, 255, 0.15);
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            border-color: cyan;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .toggle-btn svg {
+            width: 18px;
+            height: 18px;
+            color: cyan;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        .eye-open { opacity: 1; transform: scale(1); }
+        .eye-closed { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+        .toggle-btn.active .eye-open { opacity: 0; transform: scale(0.8) rotate(10deg); }
+        .toggle-btn.active .eye-closed { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        .strength-meter {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 25px;
+            height: 3px;
+        }
+
+        .strength-segment {
+            flex: 1;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strength-segment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: cyan;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .strength-segment.weak::after { transform: scaleX(1); background: #ff4444; box-shadow: 0 0 8px #ff4444; }
+        .strength-segment.medium::after { transform: scaleX(1); background: #ffaa00; box-shadow: 0 0 8px #ffaa00; }
+        .strength-segment.strong::after { transform: scaleX(1); background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            border: 1px solid cyan;
+            border-radius: 12px;
+            color: cyan;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            letter-spacing: 5px;
+        }
+
+        .login-status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: rgba(0, 255, 255, 0.5);
+            min-height: 20px;
+            font-weight: 500;
+            font-family: 'Courier New', 'Consolas', monospace;
+        }
+
+        .login-status.error { color: #ff4444; text-shadow: 0 0 8px rgba(255, 68, 68, 0.4); }
+        .login-status.success { color: #00ff88; text-shadow: 0 0 8px rgba(0, 255, 136, 0.4); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 255, 0.4); }
+
+        @media (max-width: 400px) {
+            .card, .topBar, .login-container { width: 92%; max-width: 360px; }
+            body { padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container" id="loginContainer">
+            <div class="lock-icon">
+                <div class="lock-shackle" id="lockShackle"></div>
+                <div class="lock-body" id="lockBody">
+                    <div class="lock-keyhole"></div>
+                </div>
+            </div>
+            <div class="login-title">Admin Access</div>
+            <div class="input-wrapper">
+                <input type="password" class="password-field" id="passwordInput" placeholder=" " maxlength="20" autocomplete="off">
+                <button class="toggle-btn" id="toggleBtn" onclick="togglePassword()">
+                    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="strength-meter" id="strengthMeter">
+                <div class="strength-segment" id="seg1"></div>
+                <div class="strength-segment" id="seg2"></div>
+                <div class="strength-segment" id="seg3"></div>
+                <div class="strength-segment" id="seg4"></div>
+            </div>
+            <button class="login-btn" onclick="checkPassword()">ENTER</button>
+            <div class="login-status" id="loginStatus">AWAITING INPUT...</div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="topBar" id="topBar">--:--:--</div>
+    <div class="infoPanel">STATUS: <span id="infoStatus">ONLINE</span></div>
+
+    <div class="card" id="systemBar">
+        <div class="card-header">System Monitor</div>
+        <div class="card-content">
+            <div class="row">
+                <div class="label">Heap</div>
+                <div class="progress-container">
+                    <div id="freeHeapFill" class="progress-fill" style="width: 0%"></div>
+                    <div id="freeHeapText" class="progress-text">0%</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">RSSI</div>
+                <div class="progress-container">
+                    <div id="rssiFill" class="progress-fill" style="width: 0%"></div>
+                    <div id="rssiText" class="progress-text">0dBm</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">CPU°C</div>
+                <div class="progress-container">
+                    <div id="tempFill" class="progress-fill" style="width: 0%"></div>
+                    <div id="tempText" class="progress-text">0°C</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">HUB°C</div>
+                <div class="progress-container">
+                    <div id="hubFill" class="progress-fill" style="width: 0%"></div>
+                    <div id="hubText" class="progress-text">0°C</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Device</div>
+                <button class="cyber-btn warning" id="rebootBtn" onclick="handleReboot(event)">
+                    <span class="btn-text">REBOOT</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="label">Recovery</div>
+                <button class="cyber-btn warning" id="recoveryBtn" onclick="handleRecovery(event)">
+                    <span class="btn-text">START</span>
+                </button>
+            </div>
+            <div class="close-btn" onclick="closeCard('systemBar', 'mT')">CLOSE</div>
+        </div>
+    </div>
+
+    <div class="card" id="controlBar">
+        <div class="card-header">Control Panel</div>
+        <div class="card-content">
+            <div class="row">
+                <div class="label">Output 1</div>
+                <button class="cyber-btn off" id="btn1" onclick="toggleBtn(1, event)">
+                    <span class="btn-text">OFF</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="label">Auto Upd</div>
+                <button class="cyber-btn off" id="btn2" onclick="toggleBtn(2, event)">
+                    <span class="btn-text">OFF</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="label">Output 3</div>
+                <button class="cyber-btn off" id="btn3" onclick="toggleBtn(3, event)">
+                    <span class="btn-text">OFF</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="label">Output 4</div>
+                <button class="cyber-btn off" id="btn4" onclick="toggleBtn(4, event)">
+                    <span class="btn-text">OFF</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="label">Output 5</div>
+                <button class="cyber-btn off" id="btn5" onclick="toggleBtn(5, event)">
+                    <span class="btn-text">OFF</span>
+                </button>
+            </div>
+            <div class="close-btn" onclick="closeCard('controlBar', 'bT')">CLOSE</div>
+        </div>
+    </div>
+
+    <div class="card" id="stringBar">
+        <div class="card-header">Data Center</div>
+        <div class="card-content" id="stringContent">
+            <div class="row">
+                <div class="label">Status</div>
+                <div id="str1Val" class="value-text">---</div>
+            </div>
+            <div class="row">
+                <div class="label">Mode</div>
+                <div id="str2Val" class="value-text">---</div>
+            </div>
+            <div class="row">
+                <div class="label">Version</div>
+                <div id="str3Val" class="value-text">---</div>
+            </div>
+            <div class="row">
+                <div class="label">Token</div>
+                <input type="text" class="cyber-input" id="input1" placeholder="API Token" onchange="setInput(1, this.value)">
+            </div>
+            <div class="row">
+                <div class="label">API Key</div>
+                <input type="text" class="cyber-input" id="input2" placeholder="Secret Key" onchange="setInput(2, this.value)">
+            </div>
+            <div class="row">
+                <div class="label">Config</div>
+                <button class="cyber-btn" id="upBtn" style="border-color: cyan; color: cyan;" onclick="triggerUpload(event)">
+                    <span class="btn-text">UPLOAD</span>
+                </button>
+                <input type="file" id="fUp" style="display:none" onchange="uploadFile(this)">
+            </div>
+            <div class="file-list" id="fileList"></div>
+            <div class="close-btn" onclick="closeCard('stringBar', 'sT')">CLOSE</div>
+        </div>
+    </div>
+
+<script>
+// --- ИНИЦИАЛИЗАЦИЯ ЧАСТИЦ ---
+const particlesContainer = document.getElementById('particles');
+for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 15 + 's';
+    p.style.animationDuration = (10 + Math.random() * 10) + 's';
+    particlesContainer.appendChild(p);
+}
+
+// --- ЧАСЫ ---
+function updateTime() {
+    document.getElementById('topBar').textContent = new Date().toTimeString().split(' ')[0];
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// --- АНИМАЦИЯ ТЕКСТА ---
+function slideText(el, txt) {
+    if (!el || el.textContent === txt) return;
+    el.style.transform = 'translateY(15px)';
+    el.style.opacity = '0';
+    setTimeout(() => {
+        el.textContent = txt;
+        el.style.transform = 'translateY(-15px)';
+        setTimeout(() => {
+            el.style.transform = 'translateY(0)';
+            el.style.opacity = '1';
+        }, 30);
+    }, 200);
+}
+
+// --- МОНИТОРИНГ ПЕРЕЗАГРУЗКИ ---
+function checkServerResurrection() {
+    const checkStatus = setInterval(() => {
+        fetch('/metrics').then(r => {
+            if (r.ok) { 
+                clearInterval(checkStatus); 
+                location.reload(); 
+            }
+        }).catch(() => console.log("Waiting for ESP..."));
+    }, 2000);
+}
+
+// --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+const systemBar = document.getElementById('systemBar');
+const controlBar = document.getElementById('controlBar');
+const stringBar = document.getElementById('stringBar');
+let isAdmin = false;
+
+// --- ФУНКЦИИ ДЛЯ КАРТОЧЕК ---
+function openSystemBar() {
+    if (!systemBar.classList.contains('expanded')) {
+        systemBar.classList.add('expanded');
+        fetchMetrics();
+        animateMetrics();
+        if (window.mT) clearInterval(window.mT);
+        window.mT = setInterval(fetchMetrics, 2000);
+    }
+}
+
+function closeSystemBar() {
+    systemBar.classList.remove('expanded');
+    if (window.mT) {
+        clearInterval(window.mT);
+        window.mT = null;
+    }
+}
+
+function openControlBar() {
+    if (!controlBar.classList.contains('expanded')) {
+        controlBar.classList.add('expanded');
+        fetchButtons();
+        if (window.bT) clearInterval(window.bT);
+        window.bT = setInterval(fetchButtons, 2000);
+    }
+}
+
+function closeControlBar() {
+    controlBar.classList.remove('expanded');
+    if (window.bT) {
+        clearInterval(window.bT);
+        window.bT = null;
+    }
+}
+
+function openStringBar() {
+    if (!stringBar.classList.contains('expanded') && isAdmin) {
+        stringBar.classList.add('expanded');
+        stringBar.style.height = 'auto';
+        
+        fetchStrings();
+        refreshFiles();
+        
+        setTimeout(() => {
+            if (stringBar.classList.contains('expanded')) {
+                const content = document.getElementById('stringContent');
+                stringBar.style.height = (content.scrollHeight + 40) + 'px';
+            }
+        }, 100);
+        
+        if (window.sT) clearInterval(window.sT);
+        window.sT = setInterval(() => { 
+            if (stringBar.classList.contains('expanded')) {
+                fetchStrings(); 
+                refreshFiles();
+            }
+        }, 4000);
+    }
+}
+
+function closeStringBar() {
+    stringBar.classList.remove('expanded');
+    stringBar.style.height = '55px';
+    if (window.sT) {
+        clearInterval(window.sT);
+        window.sT = null;
+    }
+}
+
+// --- ОБРАБОТЧИКИ КЛИКОВ ---
+systemBar.addEventListener('click', (e) => {
+    if (e.target.closest('button') || e.target.closest('.close-btn')) return;
+    
+    if (!systemBar.classList.contains('expanded')) {
+        openSystemBar();
+    }
+});
+
+controlBar.addEventListener('click', (e) => {
+    if (e.target.closest('button') || e.target.closest('.close-btn')) return;
+    
+    if (!controlBar.classList.contains('expanded')) {
+        openControlBar();
+    }
+});
+
+stringBar.addEventListener('click', (e) => {
+    if (e.target.closest('input') || e.target.closest('button') || e.target.closest('.file-action') || e.target.closest('.close-btn')) return;
+    
+    if (!stringBar.classList.contains('expanded') && isAdmin) {
+        openStringBar();
+    }
+});
+
+// --- КНОПКИ ЗАКРЫТИЯ ---
+document.querySelectorAll('.close-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const card = btn.closest('.card');
+        
+        if (card.id === 'systemBar') {
+            closeSystemBar();
+        } else if (card.id === 'controlBar') {
+            closeControlBar();
+        } else if (card.id === 'stringBar') {
+            closeStringBar();
+        }
+    });
+});
+
+// --- ЛОГИН ПРИ ЗАГРУЗКЕ ---
+window.checkPassword = function() {
+    const input = document.getElementById('passwordInput');
+    const status = document.getElementById('loginStatus');
+    const container = document.getElementById('loginContainer');
+    
+    if (input.value.length === 0) {
+        status.textContent = 'ACCESS DENIED: EMPTY';
+        status.className = 'login-status error';
+        container.classList.add('shake');
+        setTimeout(() => container.classList.remove('shake'), 500);
+        return;
+    }
+
+    status.textContent = 'VERIFYING...';
+    status.className = 'login-status';
+
+    fetch(`/login?pass=${encodeURIComponent(input.value)}`)
+        .then(r => {
+            if (r.ok) {
+                // Анимация успеха
+                document.getElementById('lockBody').classList.add('unlocked');
+                document.getElementById('lockShackle').classList.add('unlocked');
+                status.textContent = 'ACCESS GRANTED';
+                status.className = 'login-status success';
+                
+                // Устанавливаем флаг админа
+                isAdmin = true;
+                
+                // Скрываем логин и показываем дашборд
+                setTimeout(() => {
+                    document.getElementById('loginOverlay').classList.add('hidden');
+                    // Загружаем данные для всех карточек (фоном)
+                    fetchMetrics();
+                    fetchButtons();
+                    fetchStrings();
+                    refreshFiles();
+                }, 1000);
+            } else {
+                throw new Error();
+            }
+        })
+        .catch(() => {
+            status.textContent = 'ACCESS DENIED: INVALID';
+            status.className = 'login-status error';
+            container.classList.add('shake');
+            setTimeout(() => container.classList.remove('shake'), 500);
+            input.value = '';
+            
+            document.getElementById('lockBody').classList.remove('unlocked');
+            document.getElementById('lockShackle').classList.remove('unlocked');
+        });
+}
+
+window.togglePassword = function() {
+    const input = document.getElementById('passwordInput');
+    const btn = document.getElementById('toggleBtn');
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+    btn.classList.toggle('active');
+}
+
+// Индикатор сложности пароля
+document.getElementById('passwordInput').addEventListener('input', (e) => {
+    const val = e.target.value;
+    let score = 0;
+    if (val.length > 0) score++;
+    if (val.length > 6) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    
+    const segments = document.querySelectorAll('.strength-segment');
+    segments.forEach((seg, i) => {
+        seg.className = 'strength-segment';
+        if (i < score) {
+            if (score <= 2) seg.classList.add('weak');
+            else if (score <= 4) seg.classList.add('medium');
+            else seg.classList.add('strong');
+        }
+    });
+});
+
+document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkPassword();
+});
+
+// Закрытие логина по клику вне области
+document.getElementById('loginOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('loginOverlay')) {
+        document.getElementById('passwordInput').focus();
+    }
+});
+
+// --- МЕТРИКИ ---
+let mData = { hV: 0, hT: 327680, rV: 0, tV: 0, hbV: 0 };
+let mDisp = { hD: 0, rD: 0, tD: 0, hbD: 0 };
+
+function fetchMetrics() {
+    if (!isAdmin) return;
+    fetch('/metrics')
+        .then(r => r.json())
+        .then(d => {
+            mData = { 
+                hV: d.usedHeap, 
+                hT: d.totalHeap, 
+                rV: d.rssi, 
+                tV: d.cpuTemp, 
+                hbV: d.temp_hub 
+            };
+        })
+        .catch(() => {});
+}
+
+function animateMetrics() {
+    if (!systemBar.classList.contains('expanded')) return;
+    
+    mDisp.hD += (mData.hV - mDisp.hD) * 0.1;
+    mDisp.rD += (mData.rV - mDisp.rD) * 0.1;
+    mDisp.tD += (mData.tV - mDisp.tD) * 0.1;
+    mDisp.hbD += (mData.hbV - mDisp.hbD) * 0.1;
+
+    document.getElementById('freeHeapFill').style.width = (mDisp.hD / mData.hT * 100) + '%';
+    document.getElementById('freeHeapText').textContent = Math.round(mDisp.hD / mData.hT * 100) + '%';
+    
+    document.getElementById('rssiFill').style.width = Math.min((mDisp.rD + 100) / 70 * 100, 100) + '%';
+    document.getElementById('rssiText').textContent = Math.round(mData.rV) + 'dBm';
+    
+    document.getElementById('tempFill').style.width = Math.min(mDisp.tD, 100) + '%';
+    document.getElementById('tempText').textContent = Math.round(mData.tV) + '°C';
+    
+    document.getElementById('hubFill').style.width = Math.min(mDisp.hbD, 100) + '%';
+    document.getElementById('hubText').textContent = Math.round(mData.hbV) + '°C';
+
+    requestAnimationFrame(animateMetrics);
+}
+
+// --- СТАТУС ---
+function updateStatus() {
+    if (!isAdmin) return;
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    fetch('/status', { signal: controller.signal })
+        .then(r => {
+            if (!r.ok) throw new Error();
+            return r.json();
+        })
+        .then(d => {
+            const el = document.getElementById('infoStatus');
+            el.textContent = d.info;
+            el.style.color = "cyan";
+            clearTimeout(timeoutId);
+        })
+        .catch(() => {
+            const el = document.getElementById('infoStatus');
+            el.textContent = "OFFLINE";
+            el.style.color = "red";
+        });
+}
+
+setInterval(updateStatus, 3000);
+updateStatus();
+
+// --- КНОПКИ С СИНХРОННЫМ МИГАНИЕМ (как в старом дизайне) ---
+const btns = ['btn1', 'btn2', 'btn3', 'btn4', 'btn5'];
+let blinkState = false;
+
+function updateBtnVisual(id, isActive) {
+    const btn = document.getElementById(id);
+    const span = btn.querySelector('.btn-text');
+    slideText(span, isActive ? 'ON' : 'OFF');
+    
+    if (isActive) {
+        btn.classList.add('on');
+        btn.classList.remove('off');
+        // При включении сразу устанавливаем цвет мигания в зависимости от текущего blinkState
+        btn.style.borderColor = blinkState ? 'cyan' : '#004444';
+        btn.style.boxShadow = blinkState ? '0 0 15px rgba(0, 255, 255, 0.3)' : 'none';
+    } else {
+        btn.classList.add('off');
+        btn.classList.remove('on');
+        // Выключенные кнопки - красный контур без свечения
+        btn.style.borderColor = '#ff4444';
+        btn.style.boxShadow = 'none';
+    }
+}
+
+function fetchButtons() {
+    if (!isAdmin) return;
+    
+    fetch('/getButtons')
+        .then(r => r.json())
+        .then(d => {
+            btns.forEach(id => updateBtnVisual(id, Boolean(d[id])));
+        })
+        .catch(() => {});
+}
+
+btns.forEach((id, i) => {
+    document.getElementById(id).addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!isAdmin) return;
+        
+        const btn = document.getElementById(id);
+        const newVal = btn.classList.contains('on') ? 0 : 1;
+        fetch(`/setButton?btn=${i+1}&val=${newVal}`)
+            .then(() => fetchButtons())
+            .catch(() => {});
+    });
+});
+
+// ЕДИНЫЙ ИНТЕРВАЛ ДЛЯ СИНХРОННОГО МИГАНИЯ ВСЕХ КНОПОК
+setInterval(() => {
+    if (!isAdmin) return;
+    
+    blinkState = !blinkState;
+    btns.forEach(id => {
+        const btn = document.getElementById(id);
+        // Мигают ТОЛЬКО включенные кнопки
+        if (btn && btn.classList.contains('on')) {
+            btn.style.borderColor = blinkState ? 'cyan' : '#004444';
+            btn.style.boxShadow = blinkState ? '0 0 15px rgba(0, 255, 255, 0.3)' : 'none';
+        }
+    });
+}, 800);
+
+// --- REBOOT ---
+document.getElementById('rebootBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!isAdmin || !confirm("REBOOT DEVICE?")) return;
+    
+    const btn = e.currentTarget;
+    const span = btn.querySelector('.btn-text');
+    btn.classList.add('upload-active');
+    slideText(span, "WAIT...");
+    
+    fetch('/reboot').then(() => {
+        setTimeout(() => { 
+            slideText(span, "BOOT..."); 
+            checkServerResurrection(); 
+        }, 2000);
+    }).catch(() => {
+        btn.classList.remove('upload-active');
+        slideText(span, "ERROR");
+    });
+});
+
+// --- RECOVERY ---
+document.getElementById('recoveryBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!isAdmin || !confirm("ВКЛЮЧИТЬ АВАРИЙНЫЙ РЕЖИМ?\n(Страница будет перезагружена)")) return;
+    
+    const btn = e.currentTarget;
+    const span = btn.querySelector('.btn-text');
+    btn.classList.add('upload-active');
+    slideText(span, "WAIT...");
+
+    fetch('/startRecovery').then(r => {
+        if(r.ok) {
+            setTimeout(() => { 
+                location.href = '/'; 
+            }, 1000);
+        }
+    }).catch(() => {
+        slideText(span, "ERROR");
+        btn.classList.remove('upload-active');
+    });
+});
+
+// --- DATA CENTER ---
+function fetchStrings() {
+    if (!isAdmin) return;
+    
+    fetch('/getStrings')
+        .then(r => r.json())
+        .then(d => {
+            slideText(document.getElementById('str1Val'), d.str1 || "---");
+            slideText(document.getElementById('str2Val'), d.str2 || "---");
+            slideText(document.getElementById('str3Val'), d.str3 || "---");
+            
+            const inp1 = document.getElementById('input1');
+            const inp2 = document.getElementById('input2');
+            if (document.activeElement !== inp1) inp1.value = d.input1 || "";
+            if (document.activeElement !== inp2) inp2.value = d.input2 || "";
+            
+            const isAutoUpdate = document.getElementById('btn2').classList.contains('on');
+            if (d.str3 === "Updating" && isAutoUpdate) {
+                document.body.style.pointerEvents = "none";
+                document.body.style.filter = "blur(4px) grayscale(0.7)";
+                setTimeout(checkServerResurrection, 15000);
+            }
+        })
+        .catch(() => {});
+}
+
+window.setInput = function(num, value) {
+    if (!isAdmin) return;
+    fetch(`/setInput?num=${num}&val=${encodeURIComponent(value)}`)
+        .catch(() => {});
+}
+
+document.getElementById('upBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!isAdmin) return;
+    document.getElementById('fUp').click();
+});
+
+window.uploadFile = function(input) {
+    if (!isAdmin || !input.files[0]) return;
+    
+    const formData = new FormData();
+    formData.append("file", input.files[0], input.files[0].name);
+    
+    const btn = document.getElementById('upBtn');
+    const span = btn.querySelector('.btn-text');
+    
+    btn.classList.add('upload-active');
+    slideText(span, 'SENDING...');
+    
+    fetch('/uploadConfig', { 
+        method: 'POST', 
+        body: formData 
+    })
+    .then(r => {
+        btn.classList.remove('upload-active');
+        if (r.ok) { 
+            btn.classList.add('upload-success'); 
+            slideText(span, 'OK'); 
+            refreshFiles(); 
+        }
+        setTimeout(() => { 
+            btn.classList.remove('upload-success'); 
+            slideText(span, 'UPLOAD'); 
+        }, 1500);
+    })
+    .catch(() => {
+        btn.classList.remove('upload-active');
+        slideText(span, 'ERROR');
+    })
+    .finally(() => { 
+        input.value = ''; 
+    });
+}
+
+function refreshFiles() {
+    if (!isAdmin) return;
+    
+    fetch('/list')
+        .then(r => r.json())
+        .then(d => {
+            const list = document.getElementById('fileList');
+            if (!d || d.length === 0) {
+                list.innerHTML = '<div style="color:rgba(0,255,255,0.3);padding:15px;font-size:12px;text-align:center;">EMPTY STORAGE</div>';
+            } else {
+                list.innerHTML = d.map(f => `
+                    <div class="file-item">
+                        <span class="file-name">${f.name}</span>
+                        <a class="file-action" href="/${f.name}" download onclick="event.stopPropagation()">GET</a>
+                        <span class="file-action file-delete" onclick="deleteFile('${f.name}', event)">DEL</span>
+                    </div>
+                `).join('');
+            }
+        })
+        .catch(() => {});
+}
+
+window.deleteFile = function(name, e) {
+    e.stopPropagation();
+    if (!isAdmin || !confirm('Delete ' + name + '?')) return;
+    fetch('/delete?file=' + encodeURIComponent(name))
+        .then(() => refreshFiles())
+        .catch(() => {});
+};
+
+// Фокус на поле пароля при загрузке
+window.onload = function() {
+    document.getElementById('passwordInput').focus();
+};
+</script>
+</body>
+</html>

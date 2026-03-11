@@ -1,0 +1,18 @@
+{
+  "System": {
+    "Device": "Clock",
+    "Firmware": "0.8",
+    "password": "admin"
+  },
+  "Вuttons ": {
+    "button_1": false,
+    "button_2": false,
+    "button_3": false,
+    "button_4": false,
+    "button_5": false
+  },
+  "Data": {
+    "token": "4f29f369544cfa4af9a6b6e2ee9d862f",
+    "api": "96c7cdd8ed88cc64ae4b4fd95c674eba"
+  }
+}
