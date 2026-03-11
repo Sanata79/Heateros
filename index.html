@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>ESP32 CyberDashboard</title>
-    <!-- НИКАКИХ внешних шрифтов - только системные! -->
     <style>
-        @keyframes scan { 
+     @keyframes scan { 
             0% { background-position: -200% 0; } 
             100% { background-position: 200% 0; } 
         }
@@ -214,6 +213,15 @@
             border-color: rgba(0, 255, 255, 0.15);
         }
 
+
+.active-glow {
+  color: cyan !important;
+  border-color: cyan !important;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), inset 0 0 5px rgba(0, 255, 255, 0.2) !important;
+  text-shadow: 0 0 8px cyan !important;
+  transition: all 0.3s ease; /* Плавное включение/выключение */
+}
+
         .label {
             color: rgba(0, 255, 255, 0.6);
             font-size: 14px;
@@ -322,17 +330,26 @@
             left: 100%;
         }
 
-        .cyber-btn.off {
-            border-color: rgba(255, 68, 68, 0.6);
-            color: #ff4444;
-        }
+      /* УДАЛИТЬ старые классы и заменить на: */
 
-        .cyber-btn.on {
-            border-color: cyan;
-            color: cyan;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-            animation: pulse-glow 2s infinite;
-        }
+.cyber-btn.off {
+    border-color: rgba(255, 68, 68, 0.6);
+    color: #ff4444;
+    box-shadow: none;
+    animation: none;
+}
+
+.cyber-btn.on {
+    border-color: cyan;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(0,255,255,0.1) 0%, rgba(0,150,255,0.2) 100%);
+    box-shadow: 
+        0 0 15px rgba(0, 255, 255, 0.4),
+        0 0 30px rgba(0, 200, 255, 0.2),
+        inset 0 0 15px rgba(0, 255, 255, 0.15);
+    animation: none;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+}
 
         .cyber-btn.warning {
             border-color: rgba(255, 170, 0, 0.6);
@@ -1085,19 +1102,15 @@ window.checkPassword = function() {
     fetch(`/login?pass=${encodeURIComponent(input.value)}`)
         .then(r => {
             if (r.ok) {
-                // Анимация успеха
                 document.getElementById('lockBody').classList.add('unlocked');
                 document.getElementById('lockShackle').classList.add('unlocked');
                 status.textContent = 'ACCESS GRANTED';
                 status.className = 'login-status success';
                 
-                // Устанавливаем флаг админа
                 isAdmin = true;
                 
-                // Скрываем логин и показываем дашборд
                 setTimeout(() => {
                     document.getElementById('loginOverlay').classList.add('hidden');
-                    // Загружаем данные для всех карточек (фоном)
                     fetchMetrics();
                     fetchButtons();
                     fetchStrings();
@@ -1230,28 +1243,21 @@ function updateStatus() {
 setInterval(updateStatus, 3000);
 updateStatus();
 
-// --- КНОПКИ С СИНХРОННЫМ МИГАНИЕМ (как в старом дизайне) ---
+// --- КНОПКИ СО СКАНЕР-АНИМАЦИЕЙ ---
 const btns = ['btn1', 'btn2', 'btn3', 'btn4', 'btn5'];
-let blinkState = false;
 
 function updateBtnVisual(id, isActive) {
     const btn = document.getElementById(id);
     const span = btn.querySelector('.btn-text');
     slideText(span, isActive ? 'ON' : 'OFF');
     
-    if (isActive) {
-        btn.classList.add('on');
-        btn.classList.remove('off');
-        // При включении сразу устанавливаем цвет мигания в зависимости от текущего blinkState
-        btn.style.borderColor = blinkState ? 'cyan' : '#004444';
-        btn.style.boxShadow = blinkState ? '0 0 15px rgba(0, 255, 255, 0.3)' : 'none';
-    } else {
-        btn.classList.add('off');
-        btn.classList.remove('on');
-        // Выключенные кнопки - красный контур без свечения
-        btn.style.borderColor = '#ff4444';
-        btn.style.boxShadow = 'none';
-    }
+    btn.classList.toggle('on', isActive);
+    btn.classList.toggle('off', !isActive);
+    
+    // Убираем inline-стили — всё управляется CSS анимацией scan-glow
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    btn.style.boxShadow = '';
 }
 
 function fetchButtons() {
@@ -1260,7 +1266,10 @@ function fetchButtons() {
     fetch('/getButtons')
         .then(r => r.json())
         .then(d => {
-            btns.forEach(id => updateBtnVisual(id, Boolean(d[id])));
+            btns.forEach(id => {
+                const isActive = Boolean(d[id]);
+                updateBtnVisual(id, isActive);
+            });
         })
         .catch(() => {});
 }
@@ -1277,21 +1286,6 @@ btns.forEach((id, i) => {
             .catch(() => {});
     });
 });
-
-// ЕДИНЫЙ ИНТЕРВАЛ ДЛЯ СИНХРОННОГО МИГАНИЯ ВСЕХ КНОПОК
-setInterval(() => {
-    if (!isAdmin) return;
-    
-    blinkState = !blinkState;
-    btns.forEach(id => {
-        const btn = document.getElementById(id);
-        // Мигают ТОЛЬКО включенные кнопки
-        if (btn && btn.classList.contains('on')) {
-            btn.style.borderColor = blinkState ? 'cyan' : '#004444';
-            btn.style.boxShadow = blinkState ? '0 0 15px rgba(0, 255, 255, 0.3)' : 'none';
-        }
-    });
-}, 800);
 
 // --- REBOOT ---
 document.getElementById('rebootBtn').addEventListener('click', (e) => {
