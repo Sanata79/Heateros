@@ -69,7 +69,7 @@
         height: 325px; /* Для System table */
     }
     #bar.expanded { 
-        height: 300px; /* Для Control Panel */
+        height: 305px; /* Для Control Panel */
     }
     /* stringBar (Data desk) высоту НЕ ставим, ее ставит JS через style.height */
 
@@ -99,6 +99,7 @@
     }
 
     .expanded .syncContent, .expanded .setupContent { opacity: 1; pointer-events: auto; }
+
 
     .syncRow, .setupRow { 
         display: flex; 
@@ -134,16 +135,20 @@
         box-shadow: 0 0 6px 2px rgba(64, 224, 208, 0.6), 0 0 12px 4px rgba(64, 224, 208, 1); 
     }
 
-    .progressFill { 
-        position: absolute; 
-        height: 100%; 
-        background: linear-gradient(90deg, #00ffff, #00bfff); 
-        width: 0%; 
-        border-radius: 13px;
-        transition: width 0.5s ease;
-        opacity: 1; 
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    }
+.progressFill { 
+    position: absolute; 
+    height: 100%; 
+    background: linear-gradient(90deg, #00ffff, #00bfff); 
+    width: 0%; 
+    border-radius: 12px;
+    transition: width 0.5s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    opacity: 1; 
+}
+
+.progressFill.glow {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    filter: brightness(1.5);
+}
 
     .progressText { 
         position: absolute; 
@@ -403,7 +408,9 @@ let mData = { hV:0, hT:327680, rV:0, tV:0, hbV:0 };
 let mDisp = { hD:0, rD:0, tD:0, hbD:0 };
 
 function fetchMetrics(){
-  fetch('/metrics').then(r=>r.json()).then(d=>{ mData = { hV:d.usedHeap, hT:d.totalHeap, rV:d.rssi, tV:d.cpuTemp, hbV:d.temp_hub }; });
+  fetch('/metrics').then(r=>r.json()).then(d=>{ 
+    mData = { hV:d.usedHeap, hT:d.totalHeap, rV:d.rssi, tV:d.cpuTemp, hbV:d.temp_hub }; 
+  });
 }
 
 function animateBars(){
@@ -411,21 +418,49 @@ function animateBars(){
   mDisp.rD += (mData.rV - mDisp.rD) * 0.1;
   mDisp.tD += (mData.tV - mDisp.tD) * 0.1;
   mDisp.hbD += (mData.hbV - mDisp.hbD) * 0.1;
-  document.getElementById('freeHeapFill').style.width = (mDisp.hD/mData.hT*100)+'%';
-  document.getElementById('freeHeapText').textContent = Math.round(mDisp.hD/mData.hT*100)+'%';
-  document.getElementById('rssiFill').style.width = Math.min((mDisp.rD+100)/70*100,100)+'%';
-  document.getElementById('rssiText').textContent = Math.round(mData.rV)+'dBm';
-  document.getElementById('tempFill').style.width = (mDisp.tD)+'%';
-  document.getElementById('tempText').textContent = Math.round(mData.tV)+'°C';
-  document.getElementById('hubFill').style.width = (mDisp.hbD)+'%';
-  document.getElementById('hubText').textContent = Math.round(mData.hbV)+'°C';
+  
+  // Функция обновления бара с динамическим свечением
+  function updateBar(fillId, textId, value, max, unit) {
+    const percent = Math.min(100, Math.max(0, value/max*100));
+    const fill = document.getElementById(fillId);
+    const text = document.getElementById(textId);
+    
+    fill.style.width = percent + '%';
+    
+    // Чем ближе к 100%, тем слабее свечение
+    // От 1.5 яркости при 0% до 0.7 при 100%
+    const brightness = 1.5 - (percent / 100) * 0.8;
+    // Размер свечения от 25px до 8px
+    const glowSize = 25 - (percent / 100) * 17;
+    // Прозрачность свечения от 0.9 до 0.3
+    const glowAlpha = 0.9 - (percent / 100) * 0.6;
+    
+    fill.style.boxShadow = `0 0 ${glowSize}px rgba(0, 255, 255, ${glowAlpha})`;
+    fill.style.filter = `brightness(${brightness})`;
+    
+    // Текст
+    if (unit === '%') text.textContent = Math.round(percent) + '%';
+    else if (unit === 'dBm') text.textContent = Math.round(value) + 'dBm';
+    else text.textContent = Math.round(value) + '°C';
+  }
+  
+  // Обновляем все бары
+  updateBar('freeHeapFill', 'freeHeapText', mDisp.hD, mData.hT, '%');
+  
+  // Для RSSI другая формула
+  const rssiPercent = Math.min(100, Math.max(0, (mDisp.rD + 100) / 70 * 100));
+  updateBar('rssiFill', 'rssiText', mDisp.rD + 100, 70, 'dBm');
+  
+  updateBar('tempFill', 'tempText', mDisp.tD, 100, '°C');
+  updateBar('hubFill', 'hubText', mDisp.hbD, 100, '°C');
+  
   if(systemBar.classList.contains('expanded')) requestAnimationFrame(animateBars);
 }
 
 systemBar.onclick = () => {
   if(!systemBar.classList.contains('expanded')){
     systemBar.classList.add('expanded'); fetchMetrics(); animateBars();
-    window.mT = setInterval(fetchMetrics, 2000);
+    window.mT = setInterval(fetchMetrics, 5000);
   }
 };
 document.getElementById('closeBtn').onclick = e => { e.stopPropagation(); systemBar.classList.remove('expanded'); clearInterval(window.mT); };
@@ -451,7 +486,7 @@ document.getElementById('recoveryBtn').onclick = (e) => {
   });
 };
 
-/* REBOOT - ИСПРАВЛЕННЫЙ */
+/* REBOOT - ИСПРАВЛЕННЫЙ ПОД ESP (GET запрос) */
 document.getElementById('rebootBtn').onclick = (e) => {
     e.stopPropagation();
     if (!confirm("REBOOT DEVICE?")) return;
@@ -470,9 +505,10 @@ document.getElementById('rebootBtn').onclick = (e) => {
     document.getElementById('infoStatus').textContent = "REBOOTING...";
     document.getElementById('infoStatus').style.color = "orange";
     
-    fetch('/reboot', { method: 'POST' })
+    // ИСПРАВЛЕНИЕ: используем GET запрос как на ESP
+    fetch('/reboot')  // Убрали { method: 'POST' }
         .then(() => {
-            slideText(span, "WAITING...");
+            slideText(span, "BOOT...");
             
             // Ждем перезагрузку
             checkServerResurrection(() => {
@@ -502,7 +538,8 @@ document.getElementById('rebootBtn').onclick = (e) => {
                 updateStatus();
             });
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log("Reboot error:", err);
             slideText(span, "ERROR");
             setTimeout(() => {
                 slideText(span, oldText);
