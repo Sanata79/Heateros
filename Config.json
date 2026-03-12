@@ -1,10 +1,9 @@
 {
   "System": {
     "Device": "Clock",
-    "Firmware": "0.8",
     "password": "admin"
   },
-  "Вuttons ": {
+  "Buttons": {
     "button_1": false,
     "button_2": false,
     "button_3": false,
