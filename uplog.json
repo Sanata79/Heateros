@@ -42,8 +42,8 @@
     },
     {
       "chipFamily": "ESP32-S3",
-      "version": "0.6",
-      "md5": "65fc0ea7008fdb08bffd1335da3a042c",
+      "version": "0.10",
+      "md5": "f3d45f9a8a75791756964da13fba9d2d",
       "parts": [
         {
           "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/hub.bin",
