@@ -1,8 +1,8 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "1.10",
-  "notes": "ver 1.10 live eyes",
+  "version": "1.14",
+  "notes": "ver 1.14 flip clock",
   "builds": [
     {
       "chipFamily": "ESP8266",
