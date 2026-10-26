@@ -1,8 +1,8 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "1.5",
-  "notes": "ver 1.5 Lina MQTT",
+  "version": "1.7",
+  "notes": "ver 1.7 Mail Nadejda Lina",
   "builds": [
     {
       "chipFamily": "ESP8266",
