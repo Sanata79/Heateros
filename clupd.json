@@ -1,8 +1,8 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "1.15",
-  "notes": "ver 1.15 big weather, drip digits",
+  "version": "2.0",
+  "notes": "ver 2.0 ClockOS animated",
   "builds": [
     {
       "chipFamily": "ESP8266",
