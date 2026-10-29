@@ -1,8 +1,8 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "2.0.2",
-  "notes": "ver 2.0.2 screens fade out",
+  "version": "2.0.3",
+  "notes": "ver 2.0.3 hello and wishes",
   "builds": [
     {
       "chipFamily": "ESP8266",
