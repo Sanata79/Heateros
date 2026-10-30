@@ -1,6 +1,6 @@
 {
- "version": "0.9.2",
- "notes": "matrix service",
+ "version": "0.10.1",
+ "notes": "boot screen NEURO CLOCK",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "0b688888211c195a351729b2962e9ab2129bd4ed2fbbbc82f2a58ff0d488e94d"
+ "sha256": "5001d00cc6eb6f1efa1c9e983c72a05afdbb7c6164c165edf0cb1ba53432acdc"
 }
