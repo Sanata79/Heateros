@@ -1,6 +1,6 @@
 {
- "version": "0.9",
- "notes": "hero panel: clock, place, weather",
+ "version": "0.9.1",
+ "notes": "brand inside hero",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "f00441510a81f946eb3763190bb9abed6bc9ee919ad21de93d03df7f223ad23b"
+ "sha256": "53a1eeec3f1d763f1cf6684670bec1c230719bf13872084d2f1ceaea21ee1b57"
 }
