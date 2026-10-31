@@ -1,6 +1,6 @@
 {
- "version": "0.10.1",
- "notes": "boot screen NEURO CLOCK",
+ "version": "0.10.4",
+ "notes": "panel rests at night",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "5001d00cc6eb6f1efa1c9e983c72a05afdbb7c6164c165edf0cb1ba53432acdc"
+ "sha256": "2b574559a6ae9100df7ad418a8bc2a67a3b438d1ae66d478b90a07aecdf33c46"
 }
