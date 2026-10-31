@@ -1,6 +1,6 @@
 {
- "version": "0.10.4",
- "notes": "panel rests at night",
+ "version": "0.10.7",
+ "notes": "shm cleanup",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "2b574559a6ae9100df7ad418a8bc2a67a3b438d1ae66d478b90a07aecdf33c46"
+ "sha256": "051a2292f8a48151dc70c83758ad577317734e882f6b31b01d06da851b30936c"
 }
