@@ -1,6 +1,6 @@
 {
- "version": "0.10.9",
- "notes": "Wi-Fi: без обрыва раз в минуту (802.11n после загрузки)",
+ "version": "0.10.12",
+ "notes": "Journal в вебе; значки погоды в стиле панели",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "97a6490af6231dc2426d113f52cc75611ec57f1ee92b812ee7f0c5a99ac5f157"
+ "sha256": "935e433311e757dbdc360b69d1672ccdd0a9752cb389960d43c285c5294ac910"
 }
