@@ -1,6 +1,6 @@
 {
- "version": "0.10.8",
- "notes": "system check after updates",
+ "version": "0.10.9",
+ "notes": "Wi-Fi: без обрыва раз в минуту (802.11n после загрузки)",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "348f3781c0b3163fcd4f169e02ab95b849f826b6a24a9c35e0cf50ad56be1680"
+ "sha256": "97a6490af6231dc2426d113f52cc75611ec57f1ee92b812ee7f0c5a99ac5f157"
 }
