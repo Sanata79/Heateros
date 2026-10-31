@@ -1,6 +1,6 @@
 {
- "version": "0.10.12",
- "notes": "Journal в вебе; значки погоды в стиле панели",
+ "version": "0.10.16",
+ "notes": "Connection (Status, MQTT, Sync); Info и Journal внутри System; исправлены Matrix и REBOOT/OFF",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "935e433311e757dbdc360b69d1672ccdd0a9752cb389960d43c285c5294ac910"
+ "sha256": "260f751a912bee65f03bec35d0bfc77652d1834faec5c89248ed4b24dd29aa9c"
 }
