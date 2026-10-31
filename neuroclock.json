@@ -1,6 +1,6 @@
 {
- "version": "0.10.7",
- "notes": "shm cleanup",
+ "version": "0.10.8",
+ "notes": "system check after updates",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "051a2292f8a48151dc70c83758ad577317734e882f6b31b01d06da851b30936c"
+ "sha256": "348f3781c0b3163fcd4f169e02ab95b849f826b6a24a9c35e0cf50ad56be1680"
 }
