@@ -1,6 +1,6 @@
 {
- "version": "0.10.16",
- "notes": "Connection (Status, MQTT, Sync); Info и Journal внутри System; исправлены Matrix и REBOOT/OFF",
+ "version": "0.10.20",
+ "notes": "Стая: вздрагивает от событий, характер по времени суток, память о показанном",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "260f751a912bee65f03bec35d0bfc77652d1834faec5c89248ed4b24dd29aa9c"
+ "sha256": "f8c48ce5caa918ed4e0933bfac3faef715c7dcbd001100edd21a4274cf3c9f48"
 }
