@@ -1,6 +1,6 @@
 {
- "version": "0.10.30",
- "notes": "Нейрогород в шапке вернулся",
+ "version": "0.10.31",
+ "notes": "Новая загрузка: стая рождается из искры, выписывает имя, растаскивает его на нейроны, осваивает мир значками, выписывает веки — глаза просыпаются",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "84ecd0c0558285f5b3118d54a91e3b5a994ad2f8c7fa7166ca341f7946f42b1f"
+ "sha256": "bf815b6905d7c0ec7d6d5264456bc1dc404a33380bd4ebb116b656200a474752"
 }
