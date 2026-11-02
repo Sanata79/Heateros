@@ -1,6 +1,6 @@
 {
- "version": "0.10.28",
- "notes": "Сфера раскрывается и закрывается за 0,8 с",
+ "version": "0.10.30",
+ "notes": "Нейрогород в шапке вернулся",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "a8c3f35c4377972bde784b6774926699ddc525b7d7768717017a46a39b28d8d6"
+ "sha256": "84ecd0c0558285f5b3118d54a91e3b5a994ad2f8c7fa7166ca341f7946f42b1f"
 }
