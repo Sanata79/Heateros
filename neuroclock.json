@@ -1,6 +1,6 @@
 {
- "version": "0.10.20",
- "notes": "Стая: вздрагивает от событий, характер по времени суток, память о показанном",
+ "version": "0.10.28",
+ "notes": "Сфера раскрывается и закрывается за 0,8 с",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "f8c48ce5caa918ed4e0933bfac3faef715c7dcbd001100edd21a4274cf3c9f48"
+ "sha256": "a8c3f35c4377972bde784b6774926699ddc525b7d7768717017a46a39b28d8d6"
 }
