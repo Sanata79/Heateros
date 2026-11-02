@@ -42,14 +42,15 @@
     },
     {
       "chipFamily": "ESP32-S3",
-      "version": "0.12",
-      "md5": "914e079259986e58cc8fbb0087cc8c07",
+      "version": "0.20",
+      "md5": "6b15bdd01166a96211e069e5b04aa0b8",
       "parts": [
         {
           "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/hub.bin",
           "offset": 0
         }
-      ]
+      ],
+      "notes": "S3Loader: сеть из загрузчика, BOOT 5 с — в загрузчик"
     }
   ]
 }
