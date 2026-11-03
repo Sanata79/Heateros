@@ -1,6 +1,6 @@
 {
- "version": "0.10.33",
- "notes": "Глаза рисуются в 8 раз быстрее (кривые век — раз на столбец): вся загрузка на 50 кадр/с",
+ "version": "0.10.34",
+ "notes": "Сторож плавности: просадка кадров — одна строка в журнале (насколько, сколько, какие сцены)",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "f5820f2e8ced0cef2a938e9b0ea60d8cdd80e649e009133baf6e981b077878f9"
+ "sha256": "ea74930fb35b6cb39dd243fca05c853a2d0402002fee112b8a8ee419dcc3a8bd"
 }
