@@ -1,8 +1,8 @@
 {
   "name": "HeaterOS",
   "about": "Universal Thermostat",
-  "version": "2.0",
-  "notes": "New build",
+  "version": "3.0",
+  "notes": "NEWOS 3: HomeKit в плате, новая страница, без GyverPortal",
   "builds": [
     {
       "chipFamily": "ESP8266",
@@ -15,12 +15,15 @@
     },
     {
       "chipFamily": "ESP32",
+      "version": "3.0",
+      "md5": "b4c1fee403454e86468b9e771baba83e",
       "parts": [
         {
           "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/update.bin",
           "offset": 0
         }
-      ]
+      ],
+      "notes": "NEWOS 3: HomeKit в плате, новая страница, без GyverPortal"
     },
     {
       "chipFamily": "ESP32-C3",
