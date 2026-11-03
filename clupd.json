@@ -43,7 +43,7 @@
     {
       "chipFamily": "ESP32-S3",
       "version": "3.0",
-      "md5": "aedcb3712772fcf024141c693f3d77c7",
+      "md5": "68d63fd721c0beadd1a813ebf361cfea",
       "notes": "S3: загрузчик, Config и Wi-Fi table, BME280 и CO2",
       "parts": [
         {
