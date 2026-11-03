@@ -42,9 +42,12 @@
     },
     {
       "chipFamily": "ESP32-S3",
+      "version": "3.0",
+      "md5": "74e25a9f3f2ee79e6b4c7c1c98a69211",
+      "notes": "S3: загрузчик, Config и Wi-Fi table, BME280 и CO2",
       "parts": [
         {
-          "path": "n/a",
+          "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/cl_S3.bin",
           "offset": 0
         }
       ]
