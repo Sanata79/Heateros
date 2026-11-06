@@ -1,6 +1,6 @@
 {
- "version": "0.10.37",
- "notes": "HEATER: ожидание — голубой огонь вместо песочных часов; STATUS → MODE через сеть, натянутую между значками",
+ "version": "0.10.40",
+ "notes": "Connection → Wi-Fi: таблица сетей, переход с откатом",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "f64b9e853b4d99ec88891a64394f4d4b68dbde50d015eb1de1028af32f2ebfd9"
+ "sha256": "82725db49b6af59e5faf0b8705bdae8e14aa85d6056cf8a021454f3b311fbd30"
 }
