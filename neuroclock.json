@@ -1,6 +1,6 @@
 {
- "version": "0.10.44",
- "notes": "Wi-Fi: точка доступа NeuroClock, порядок сетей без гонки",
+ "version": "0.10.45",
+ "notes": "Wi-Fi: ждать адрес от сети до 50 с, понятные причины",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "1bd3c8aec19ae8dc82f3ef7515d8a9a87a0b9852289c0d13c0a268eb276b93b7"
+ "sha256": "1dfd022385190063e1ea8b8dcc5ae074cf17efa1dc77d5949f36a6baada353c9"
 }
