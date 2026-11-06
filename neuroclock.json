@@ -1,6 +1,6 @@
 {
- "version": "0.10.36",
- "notes": "Утро: зеркало ночи (будни с 6:00) — ранняя серая стая выписывает тихий экран и меняет его серыми нейронами; в начале дня серые нейроны становятся голубыми и будят часы",
+ "version": "0.10.37",
+ "notes": "HEATER: ожидание — голубой огонь вместо песочных часов; STATUS → MODE через сеть, натянутую между значками",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "5d6b3ac70447a5079d299be36ed0f58f5e2618eb5e1a3258b78eabf5cff140c4"
+ "sha256": "f64b9e853b4d99ec88891a64394f4d4b68dbde50d015eb1de1028af32f2ebfd9"
 }
