@@ -1,6 +1,6 @@
 {
- "version": "0.10.40",
- "notes": "Connection → Wi-Fi: таблица сетей, переход с откатом",
+ "version": "0.10.44",
+ "notes": "Wi-Fi: точка доступа NeuroClock, порядок сетей без гонки",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "82725db49b6af59e5faf0b8705bdae8e14aa85d6056cf8a021454f3b311fbd30"
+ "sha256": "1bd3c8aec19ae8dc82f3ef7515d8a9a87a0b9852289c0d13c0a268eb276b93b7"
 }
