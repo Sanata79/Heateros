@@ -1,6 +1,6 @@
 {
- "version": "0.10.45",
- "notes": "Wi-Fi: ждать адрес от сети до 50 с, понятные причины",
+ "version": "0.10.49",
+ "notes": "Сеть (morph) считает кадр быстрее — те же кадры побайтно, меньше тяжёлых кадров в погоде",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "1dfd022385190063e1ea8b8dcc5ae074cf17efa1dc77d5949f36a6baada353c9"
+ "sha256": "7ae62b88cb609931436b1745f6e5cfac78a51add3819ecddb730cd5935f7c690"
 }
