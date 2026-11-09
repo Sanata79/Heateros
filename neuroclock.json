@@ -1,6 +1,6 @@
 {
- "version": "0.10.49",
- "notes": "Сеть (morph) считает кадр быстрее — те же кадры побайтно, меньше тяжёлых кадров в погоде",
+ "version": "0.10.50",
+ "notes": "Wi-Fi: статус показывает живую сеть и адрес; итог переключения — только свежий",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "7ae62b88cb609931436b1745f6e5cfac78a51add3819ecddb730cd5935f7c690"
+ "sha256": "2374137e99c9f0033fc5b8ed1ca7f57427467f43b0049bed2ec0056b006c240e"
 }
