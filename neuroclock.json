@@ -1,6 +1,6 @@
 {
- "version": "0.10.51",
- "notes": "Обновления системы — самым низким приоритетом: не отнимают процессор у матрицы",
+ "version": "0.10.65",
+ "notes": "Диагностика: «Opus on problems» — проблему ночной проверки разбирает Claude и пишет вывод в OPUS",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "db13b999580df72af4b769dc8d9dcc146abeb574369c167ef04a4be81ea7e0f2"
+ "sha256": "7c61edd451c40d4edb2f036974cc6611d94426fa584f1b5884990c83a7212d8f"
 }
