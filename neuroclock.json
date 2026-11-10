@@ -1,6 +1,6 @@
 {
- "version": "0.10.50",
- "notes": "Wi-Fi: статус показывает живую сеть и адрес; итог переключения — только свежий",
+ "version": "0.10.51",
+ "notes": "Обновления системы — самым низким приоритетом: не отнимают процессор у матрицы",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "2374137e99c9f0033fc5b8ed1ca7f57427467f43b0049bed2ec0056b006c240e"
+ "sha256": "db13b999580df72af4b769dc8d9dcc146abeb574369c167ef04a4be81ea7e0f2"
 }
