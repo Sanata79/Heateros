@@ -1,8 +1,8 @@
 {
   "name": "ClockOS",
   "about": "home clock",
-  "version": "2.5",
-  "notes": "ver 2.5 neuro",
+  "version": "2.6",
+  "notes": "ver 2.6: auth, calendar, mqtt",
   "builds": [
     {
       "chipFamily": "ESP8266",
@@ -42,12 +42,9 @@
     },
     {
       "chipFamily": "ESP32-S3",
-      "version": "3.0",
-      "md5": "c49d2f5a8b97f52cdb357734747cf2ec",
-      "notes": "S3: загрузчик, Config и Wi-Fi table, BME280 и CO2",
       "parts": [
         {
-          "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/cl_S3.bin",
+          "path": "n/a",
           "offset": 0
         }
       ]
