@@ -1,6 +1,6 @@
 {
- "version": "0.10.65",
- "notes": "Диагностика: «Opus on problems» — проблему ночной проверки разбирает Claude и пишет вывод в OPUS",
+ "version": "0.10.69",
+ "notes": "Диагностика: выключили Nightly — Opus выключается сам, OPUS не показывается на матрице",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "7c61edd451c40d4edb2f036974cc6611d94426fa584f1b5884990c83a7212d8f"
+ "sha256": "002d886476d5231dff22e1b984b9d347e2757b004d0521e7532581182b7c8e12"
 }
