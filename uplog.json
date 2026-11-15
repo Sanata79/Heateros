@@ -1,8 +1,8 @@
 {
   "name": "HeaterOS",
   "about": "Universal Thermostat",
-  "version": "3.0",
-  "notes": "NEWOS 3: HomeKit в плате, новая страница, без GyverPortal",
+  "version": "2.0",
+  "notes": "New build",
   "builds": [
     {
       "chipFamily": "ESP8266",
@@ -15,15 +15,12 @@
     },
     {
       "chipFamily": "ESP32",
-      "version": "3.0",
-      "md5": "b4c1fee403454e86468b9e771baba83e",
       "parts": [
         {
           "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/update.bin",
           "offset": 0
         }
-      ],
-      "notes": "NEWOS 3: HomeKit в плате, новая страница, без GyverPortal"
+      ]
     },
     {
       "chipFamily": "ESP32-C3",
@@ -46,14 +43,14 @@
     {
       "chipFamily": "ESP32-S3",
       "version": "0.22",
-      "md5": "ee8f713186cbf59aebb23e6721644849",
+      "md5": "15f4119cc938c68e2f2e51dd85afddaa",
       "parts": [
         {
           "path": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/hub.bin",
           "offset": 0
         }
       ],
-      "notes": "загрузчик S3Loader: RST трижды, кнопка LOADER, счёт PROG"
+      "notes": "оформление NeuroClock: стекло, нейроны, горящая звезда при нагреве; Wi-Fi из загрузчика"
     }
   ]
 }
