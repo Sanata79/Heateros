@@ -1,6 +1,6 @@
 {
- "version": "0.10.79",
- "notes": "Поддержка Pi 4 и Portal S3, исправления веб-панели и журнала, ключи API в локальных настройках",
+ "version": "0.10.80",
+ "notes": "Pi 4: проверка и установка с GitHub, контрольная сумма и откат при сбое",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "4853428d7585e366e023679c3cfdb32eccfb5efa5ace3971526b7498416ac938"
+ "sha256": "86b88f58c26591a93682ff66412840b74887f991330e33f0b70d18482701a1e1"
 }
