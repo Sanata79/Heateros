@@ -1,6 +1,6 @@
 {
- "version": "0.10.69",
- "notes": "Диагностика: выключили Nightly — Opus выключается сам, OPUS не показывается на матрице",
+ "version": "0.10.79",
+ "notes": "Поддержка Pi 4 и Portal S3, исправления веб-панели и журнала, ключи API в локальных настройках",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "002d886476d5231dff22e1b984b9d347e2757b004d0521e7532581182b7c8e12"
+ "sha256": "4853428d7585e366e023679c3cfdb32eccfb5efa5ace3971526b7498416ac938"
 }
