@@ -1,6 +1,6 @@
 {
- "version": "0.10.80",
- "notes": "Pi 4: проверка и установка с GitHub, контрольная сумма и откат при сбое",
+ "version": "0.10.81",
+ "notes": "Панель Portal board и обновление прошивки NeuroPortal через USB",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "86b88f58c26591a93682ff66412840b74887f991330e33f0b70d18482701a1e1"
+ "sha256": "5f442be967f8504f579d2e69194ac1a22e86e6eecf4fa79215384134cef07d8e"
 }
