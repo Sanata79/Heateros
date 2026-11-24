@@ -1,6 +1,6 @@
 {
- "version": "0.10.81",
- "notes": "Панель Portal board и обновление прошивки NeuroPortal через USB",
+ "version": "0.10.82",
+ "notes": "Pi 4: сканирование Nearby без sudo и сообщение об отказе NetworkManager",
  "url": "https://raw.githubusercontent.com/Sanata79/Heateros/refs/heads/main/neuroclock.tar.gz",
- "sha256": "5f442be967f8504f579d2e69194ac1a22e86e6eecf4fa79215384134cef07d8e"
+ "sha256": "fdad795a1fcc7fff02ae7c35d26a4381eb05532a372ab8f6e06ccfd21ed6c34a"
 }
